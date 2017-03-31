@@ -1,0 +1,12 @@
+# IDE
+.idea
+
+# Dependency directory
+node_modules
+
+# log directory
+logs
+
+#projects directory
+lib/projects/*/
+!lib/projects/test-project/
