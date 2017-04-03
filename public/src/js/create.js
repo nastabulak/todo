@@ -26,36 +26,41 @@ function createLi (value) {
     let button = createElement("button", "removeButton", "x" );
     let circle = createElement("button", "circle", "o");
 
-    li.appendChild(circle);
-    li.appendChild(todo);
-    li.appendChild(button);
+    let fragment = document.createDocumentFragment();
+    fragment.appendChild(circle);
+    fragment.appendChild(todo);
+    fragment.appendChild(button);
+
+    li.appendChild(fragment);
+
     return li
 }
-function showTasks(){
-    if (localStorage.length>0) {
-        for (i=0; i<localStorage.length; i++) {
+function showTasks(list){
+    if (localStorage.length) {
+        for (let i=0; i<localStorage.length; i++) {
             let li = createLi(localStorage.getItem(localStorage.key(i)));
             li.setAttribute("data-id", localStorage.key(i).substring(3));
-            ul.appendChild(li);
+            list.appendChild(li);
         }
-        let summary = createSummary(ul);
-        ul.appendChild(summary)
+        let summary = createSummary(list);
+        list.appendChild(summary)
     }
 }
 
 function createSummary(list) {
-    if (list.childNodes.length>0) {
-        for (i = 0; i < list.childNodes.length; i++) {
-            if (list.childNodes[i].classList.contains("summary"))
-                list.removeChild(ul.childNodes[i])
+    let taskLis = list.childNodes;
+    if (taskLis.length) {
+        for (let i = 0; i < taskLis.length; i++) {
+            if (taskLis[i].classList.contains("summary"))
+                list.removeChild(taskLis[i])
         }
     }
     let li = document.createElement('li');
     li.classList.add("summary");
 
     let counter = 0;
-    for (i=0; i<list.childNodes.length; i++){
-        if (!list.childNodes[i].classList.contains('taskDone')) counter++
+    for (let i=0; i<list.childNodes.length; i++){
+        if (!taskLis[i].classList.contains('taskDone')) counter++
     }
 
     let text = counter + " items left";
@@ -67,31 +72,35 @@ function createSummary(list) {
 
     let clear = createElement("a", "clear","Clear Completed");
 
+    let fragment = document.createDocumentFragment();
+    fragment.appendChild(summary);
+    fragment.appendChild(all);
+    fragment.appendChild(active);
+    fragment.appendChild(completed);
+    fragment.appendChild(clear);
 
-    li.appendChild(summary);
-    li.appendChild(all);
-    li.appendChild(active);
-    li.appendChild(completed);
-    li.appendChild(clear);
+    li.appendChild(fragment);
     return li
 }
 
 function showAll (list){
-    if (list.childNodes.length>0) {
-        for (i = 0; i < list.childNodes.length; i++) {
-                ul.childNodes[i].classList.remove("remove")
+    let taskLis = list.childNodes;
+    if (taskLis.length) {
+        for (let i = 0; i < taskLis.length; i++) {
+                taskLis[i].classList.remove("remove")
         }
     }
 
 }
 function showCompleted (list) {
-    if (list.childNodes.length>0) {
-        for (i = 0; i < list.childNodes.length; i++) {
-            if (list.childNodes[i].classList.contains("remove")) {
-                ul.childNodes[i].classList.remove("remove")
+    let taskLis = list.childNodes;
+    if ( taskLis.length) {
+        for ( let i = 0; i < taskLis.length; i++ ) {
+            if (taskLis[i].classList.contains("remove")) {
+                taskLis[i].classList.remove("remove")
             }
-            if (!list.childNodes[i].classList.contains("taskDone")) {
-                ul.childNodes[i].classList.add("remove")
+            if (!taskLis[i].classList.contains("taskDone")) {
+                taskLis[i].classList.add("remove")
             }
 
         }
@@ -99,24 +108,26 @@ function showCompleted (list) {
 }
 
 function showActive (list) {
-    if (list.childNodes.length>0) {
-        for (i = 0; i < list.childNodes.length; i++) {
-            if (list.childNodes[i].classList.contains("remove")) {
-                ul.childNodes[i].classList.remove("remove")
+    let taskLis = list.childNodes;
+    if ( taskLis.length ) {
+        for ( let i = 0; i < taskLis.length; i++ ) {
+            if ( taskLis[i].classList.contains("remove") ) {
+                taskLis[i].classList.remove("remove")
             }
-            if (list.childNodes[i].classList.contains("taskDone"))
-                ul.childNodes[i].classList.add("remove")
+            if (taskLis[i].classList.contains("taskDone"))
+                taskLis[i].classList.add("remove")
         }
     }
 
 }
 
 function clearCompleted (list){
-    if (list.childNodes.length>0) {
-        for (i = 0; i < list.childNodes.length; i++) {
-            if (list.childNodes[i].classList.contains("taskDone")) {
-                ul.removeChild(ul.childNodes[i]);
-                localStorage.removeItem ("key"+ ul.childNodes[i].getAttribute("data-id"))
+    let taskLis = list.childNodes;
+    if (taskLis.length) {
+        for ( let i = 0; i < taskLis.length; i++ ) {
+            if ( taskLis[i].classList.contains("taskDone") ) {
+            list.removeChild(taskLis[i]);
+                localStorage.removeItem ("key"+ taskLis[i].getAttribute("data-id"));
                 clearCompleted(list)
             }
         }
